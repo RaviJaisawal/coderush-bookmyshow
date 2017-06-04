@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<title>BookMyShow</title>
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"		integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="		crossorigin="anonymous"></script>
+		<script type="text/javascript" src="javascripts/custom.js"></script>
+		<link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<!-- Custom fonts for this template -->
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+		<link href="https://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700,100italic,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
+		<!-- Custom styles for this template -->
+		<link href="stylesheets/style.css" rel="stylesheet">
+		<!-- Temporary navbar container fix -->
+		<style>
+		.navbar-toggler {
+		z-index: 1;
+		}
+		
+		@media (max-width: 576px) {
+		nav > .container {
+		width: 100%;
+		}
+		}
+		/* Temporary fix for img-fluid sizing within the carousel */
+		
+		.carousel-item.active,
+		.carousel-item-next,
+		.carousel-item-prev {
+		display: block;
+		}
+		</style>
+		<script type="text/javascript">
+
+			function GetData(){
+				var tid =document.getElementById('tid').value;
+				var data;
+				var data ={tid:tid};
+				console.log(data);
+				$.ajax({
+				url: '/GetTransactionData',
+				type: 'POST',
+				dataType: 'json',
+				data: JSON.stringify(data),
+				contentType: 'application/json',
+				cache: false,
+				timeout: 5000,
+				complete: function() {
+				//called when complete
+					//document.getElementById("resale").style.display = "block";
+				},
+				success: function(res) {
+				document.getElementById("resale").style.display = "block";
+				var html="";
+				for (var i = 0; i< res.length; i++) {
+				html += '<br /><div class="form-group"><b>MOVIE:</b>  Baahubali 2: The Conclusion</div><div class="form-group"><b> Transaction Id:</b> ' + res[i].tid + ' </div><div class="form-group"><b> Ticket qty: </b>' + res[i].qty + '</div><div class="form-group"><b><button type="button" class="btn btn-primary" onclick=MarkResale("'+res[i].tid+'")>Mark Resale</button></b></div>';
+				}
+				console.log(html);
+				$('#target').html(html);
+				
+				},
+				error: function() {
+				//called when error occurs
+					alert('Error');
+				}
+				});
+			}
+
+			function MarkResale(id){
+				var markData = {id:id};
+				console.log(markData);
+			$.ajax({
+			url: '/MarkResale',
+			type: 'POST',
+			dataType: 'json',
+			data: JSON.stringify(markData),
+			contentType: 'application/json',
+			cache: false,
+			timeout: 5000,
+			complete: function() {
+			//called when complete
+				//document.getElementById("resale").style.display = "block";
+			},
+			success: function(res) {
+			
+					alert(JSON.stringify(res));
+					window.location = "/";
+				
+			},
+			error: function(err) {
+			//called when error occurs
+			console.log(err);
+				alert('Error');
+			}
+			});
+			}
+		</script>
+	</head>
+	<body>
+		<div class="tagline-upper text-center text-heading text-shadow text-white mt-4 hidden-md-down">BookMyShow</div>
+		<div class="tagline-lower text-center text-expanded text-shadow text-white mb-4 hidden-md-down">Mood Kiya Book Kiya</div>
+		<!-- Navigation -->
+		
+		<div class="container bg-primary" style="height:500px">
+			<div class="row" id="seatlayout">
+				<div class="col-12">
+				<br />
+					<h3><font color="#ffffff">System Resale</font></h3>
+					<form class="form-inline">
+						<div class="form-group">
+							<label class="control-label col-sm-2" for="email"><font color="#ffffff">BookingId:</font></label>
+							<div class="col-sm-10">
+								<input type="email" class="form-control" id="tid" name="tid" placeholder="1234">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<button type="button" class="btn btn-success" onclick="GetData()">Get History</button>
+							</div>
+						</div>
+					</form>
+					
+				</div>
+				
+				<div class="col-12" id="resale" style="background:#ffffff;display: none" >
+					
+					<div id="target">
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		<script src="tether/tether.min.js"></script>
+		<script src="javascripts/bootstrap.min.js"></script>
+	</body>
+</html>

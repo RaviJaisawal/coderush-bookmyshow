@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<title>BookMyShow</title>
+		<script
+		src="https://code.jquery.com/jquery-3.2.1.min.js"
+		integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+		crossorigin="anonymous"></script>
+		<script type="text/javascript" src="javascripts/custom.js"></script>
+		<link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<!-- Custom fonts for this template -->
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+		<link href="https://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700,100italic,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
+		<!-- Custom styles for this template -->
+		<link href="stylesheets/style.css" rel="stylesheet">
+		<!-- Temporary navbar container fix -->
+		<style>
+		.navbar-toggler {
+		z-index: 1;
+		}
+		
+		@media (max-width: 576px) {
+		nav > .container {
+		width: 100%;
+		}
+		}
+		/* Temporary fix for img-fluid sizing within the carousel */
+		
+		.carousel-item.active,
+		.carousel-item-next,
+		.carousel-item-prev {
+		display: block;
+		}
+		</style>
+		<script type="text/javascript">
+			  function leaveChange() {
+    
+    // document.getElementById("btnsubmit").style.display='block';
+      document.getElementById("btnsubmit").style.visibility = "visible";
+};
+var q=1;
+function Cal(){
+	var p;
+	console.log(document.getElementById("sale").value);
+	if (document.getElementById("sale").value == 'resale') {
+		p=90;
+	}
+	else{
+		p=100
+	}
+ 	 document.getElementById("ordersummary").style.display = "block";
+ 	 q =document.getElementById("qty").value;
+ 	 var b = 20;
+ 	 var ttp =p*q;
+ 	  document.getElementById("tp").innerText = p;
+ 	  document.getElementById("tq").innerText = q;
+ 	  document.getElementById("ttp").innerText = ttp;
+ 	  document.getElementById("bf").innerText = b;
+ 	
+ 	  document.getElementById("tap").innerText = parseFloat(ttp)+parseFloat(b);
+							
+
+};
+
+function updateMongo(){
+	var email =document.getElementById('email').value;
+	var phone =document.getElementById('phone').value;
+	var status;
+	var data ={qty:q,email:email,phone:phone};
+	if (document.getElementById("sale").value == 'resale') {
+		resale(data);
+	}
+	else{
+		sale(data);
+	}
+	 	
+		
+}
+
+function sale(data){
+	 $.ajax({
+            url: '/Updatemongo',
+            type: 'POST',
+            dataType: 'json',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            cache: false,
+            timeout: 5000,
+            complete: function() {
+                //called when complete
+               
+            },
+            success: function(res) {
+               alert('Your booking is successfully commited');
+                window.location.reload(true); 
+            },
+            error: function() {
+                //called when error occurs
+            }
+        });
+}
+
+
+
+function resale(data){
+	 $.ajax({
+            url: '/UpdateBooking',
+            type: 'POST',
+            dataType: 'json',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            cache: false,
+            timeout: 5000,
+            complete: function() {
+                //called when complete
+            	console.log('complete');
+                
+            },
+            success: function(res) {
+            	console.log(res)
+            	
+            	alert('Your booking is sucessfully commited');
+
+            	window.location.reload(true); 		
+            	console.log('success');
+              
+            },
+            error: function() {
+                //called when error occurs
+            }
+        });
+}
+
+		</script>
+
+
+	</head>
+	<body>
+		<div class="tagline-upper text-center text-heading text-shadow text-white mt-4 hidden-md-down">BookMyShow</div>
+		<div class="tagline-lower text-center text-expanded text-shadow text-white mb-4 hidden-md-down">Mood Kiya Book Kiya</div>
+		<!-- Navigation -->
+		<nav class="navbar navbar-toggleable-md navbar-light navbar-custom bg-faded py-lg-4">
+			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarExample" aria-controls="navbarExample" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="container">
+					<div class="collapse navbar-collapse" id="navbarExample">
+					<ul class="navbar-nav mx-auto">
+						<li class="nav-item px-lg-3">
+							<span> Movie - Baahubali 2 </span>
+						</li>
+						<li class="nav-item px-lg-3">
+							<span> Venue - PVR: Dynamix, Juhu</span>
+						</li>
+						<li class="nav-item px-lg-3">
+							<span> Show time - 10.30 PM</span>
+						</li>
+						<li class="nav-item px-lg-3">
+							<span> Tix Type</span>
+							<select class = "sale" id="sale" onchange="leaveChange()">
+								<option value="sale">sale</option>
+								<option value="resale">resale</option>
+							</select>
+						</li>
+						<li class="nav-item px-lg-3">
+							<span> Tix Qty</span>
+							<select class = "qty" id="qty" onclick="leaveChange()">
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+					
+							</select>
+						</li>
+						    <li class="nav-item px-lg-3">
+								 
+							<div><a href="/resale" class="btn" role="button">Ticket Resale</a></div> 
+							
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<div class="container bg-primary" style="height:600px">
+			<div class="row" id="seatlayout">
+				<div class="col-7">
+					<h3 align="center" style="padding-top: 20px;"><b>Seat Layout</b></h3>
+					<table align="center" cellpadding="20px" cellspacing="10px">
+						<% for(var i =0; i < data.length;i=i+5) {%>
+						<tr>
+							
+								<td name="<%=data[i].status %>"><img src="images/<%=data[i].status %>.gif" /></td>
+								<td name="<%=data[i+1].status %>"><img src="images/<%=data[i+1].status %>.gif"></td>
+								<td name="<%=data[i+2].status %>"><img src="images/<%=data[i+2].status %>.gif"></td>
+								<td name="<%=data[i+3].status %>"><img src="images/<%=data[i+3].status %>.gif"></td>
+								<td name="<%=data[i+4].status %>"><img src="images/<%=data[i+4].status %>.gif"></td>
+								
+							
+							
+						</tr>
+						<%} %>
+						
+					</table>
+					<button class="btn btn-success" id="btnsubmit" style="visibility: hidden;" onclick="Cal()">Next</button>
+				</div>
+				
+				<div class="col-5" id="ordersummary" style="background:#ffffff;display: none;" >
+					<form class="form">
+					<br />
+						<h3 align="center" style="padding-top: 20px;"><b>Order summary</b></h3>
+						<table align="center" cellpadding="10px"">
+							<tr><td>Ticket Price: </td><td><span name="tp" id="tp"></span></td></tr>
+							<tr><td>Ticket Qty: </td><td><span name="tq" id="tq"></span></td></tr>
+							<tr><td>Total Price: </td><td><span name="ttp" id="ttp"></span></td></tr>
+							<tr><td>Booking Fee: </td><td><span name="bf" id="bf"></span></td></tr>
+							<tr><td>Total amount to paid: </td><td><span name="tap" id="tap"></span></td></tr>
+							<tr><td>EMail id: </td><td><input type="email" id="email" style="width:100" required></td></tr>
+							<tr><td>Phone no: </td><td><input type="text" id="phone" required></td></tr>
+
+						</table>
+						
+						<button class="btn btn-success" id= "btnordersummary" type="Button" onclick="updateMongo()">Proceed</button>
+					</form>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+
+	<script src="tether/tether.min.js"></script>
+	<script src="javascripts/bootstrap.min.js"></script>
+
+</body>
+</html>
